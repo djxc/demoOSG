@@ -43,6 +43,10 @@ if(ANDROID)
     rotatecallback.h
     infocallback.cpp
     infocallback.h
+    cessnacallback.cpp
+    cessnacallback.h
+    housemodel.cpp
+    housemodel.h
   )
 else()
   add_executable(demoOSG
@@ -54,11 +58,16 @@ else()
     rotatecallback.h
     infocallback.cpp
     infocallback.h
+    cessnacallback.cpp
+    cessnacallback.h
+    housemodel.cpp
+    housemodel.h
   )
 endif()
 
 target_link_libraries(demoOSG PRIVATE Qt5::Widgets
     ${LIB_OSG_PATH}\\osg.lib
+    ${LIB_OSG_PATH}\\osgUtil.lib
     ${LIB_OSG_PATH}\\osgViewer.lib
     ${LIB_OSG_PATH}\\osgDB.lib
     ${LIB_OSG_PATH}\\OpenThreads.lib)
