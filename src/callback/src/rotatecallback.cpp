@@ -1,4 +1,4 @@
-#include "rotatecallback.h"
+#include <callback/rotatecallback.h>
 
 RotateCallback::RotateCallback()
     :osg::NodeCallback()

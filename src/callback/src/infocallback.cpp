@@ -1,4 +1,4 @@
-#include "infocallback.h"
+#include <callback/infocallback.h>
 
 InfoCallback::InfoCallback()
 {

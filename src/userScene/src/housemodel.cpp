@@ -1,4 +1,4 @@
-#include "housemodel.h"
+#include <userScene/housemodel.h>
 
 HouseModel::HouseModel()
 {
