@@ -15,9 +15,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/src)
 
 # 引入第三方头文件
-include_directories("D:\\code\\c\\osg\\include")
+include_directories("D:\\code\\c\\osg-3.7.0\\include")
 
-set(LIB_OSG_PATH "D:\\code\\c\\osg\\lib")
+set(LIB_OSG_PATH "D:\\code\\c\\osg-3.7.0\\lib")
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
@@ -30,11 +30,11 @@ add_executable(demoOSG ${srcs})
 
 # 除了依赖第三方库还需要添加子模块
 target_link_libraries(demoOSG PRIVATE Qt5::Widgets
-    ${LIB_OSG_PATH}\\osg.lib
-    ${LIB_OSG_PATH}\\osgGA.lib
-    ${LIB_OSG_PATH}\\osgText.lib
-    ${LIB_OSG_PATH}\\osgUtil.lib
-    ${LIB_OSG_PATH}\\osgViewer.lib
-    ${LIB_OSG_PATH}\\osgDB.lib
-    ${LIB_OSG_PATH}\\OpenThreads.lib
+    ${LIB_OSG_PATH}\\osgd.lib
+    ${LIB_OSG_PATH}\\osgGAd.lib
+    ${LIB_OSG_PATH}\\osgTextd.lib
+    ${LIB_OSG_PATH}\\osgUtild.lib
+    ${LIB_OSG_PATH}\\osgViewerd.lib
+    ${LIB_OSG_PATH}\\osgDBd.lib
+    ${LIB_OSG_PATH}\\OpenThreadsd.lib
     callback userScene)
