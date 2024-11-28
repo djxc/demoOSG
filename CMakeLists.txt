@@ -21,6 +21,7 @@ set(LIB_OSG_PATH "D:\\code\\c\\osg-3.7.0\\lib")
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+add_subdirectory(src/handlers)
 add_subdirectory(src/callback)
 add_subdirectory(src/userScene)
 add_subdirectory(src/main)
@@ -36,5 +37,13 @@ target_link_libraries(demoOSG PRIVATE Qt5::Widgets
     ${LIB_OSG_PATH}\\osgUtild.lib
     ${LIB_OSG_PATH}\\osgViewerd.lib
     ${LIB_OSG_PATH}\\osgDBd.lib
+    ${LIB_OSG_PATH}\\osgManipulatord.lib
     ${LIB_OSG_PATH}\\OpenThreadsd.lib
-    callback userScene)
+    ${LIB_OSG_PATH}\\osgWidgetd.lib
+    ${LIB_OSG_PATH}\\osgVolumed.lib
+    ${LIB_OSG_PATH}\\osgUId.lib
+    ${LIB_OSG_PATH}\\osgSimd.lib
+    ${LIB_OSG_PATH}\\osgPresentationd.lib
+    ${LIB_OSG_PATH}\\osgParticled.lib
+    ${LIB_OSG_PATH}\\osgFXd.lib
+    callback userScene handlers)

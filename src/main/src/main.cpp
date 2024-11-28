@@ -35,6 +35,8 @@
 #include <userScene/housemodel.h>
 #include <userScene/wallpapermodel.h>
 
+#include <handlers/keyboardhandler.h>
+
 
 osg::Transform* createAutoTransform(double posX, osg::Node* model) {
     osg::ref_ptr<osg::AutoTransform> at = new osg::AutoTransform;
@@ -377,6 +379,13 @@ osg::ref_ptr<osg::Node> createWallPaperModel()
     return root;
 }
 
+osg::ref_ptr<osg::Node> demoKeyEvent() {
+    osg::ref_ptr<osg::Switch> root = new osg::Switch;
+    root->addChild( osgDB::readNodeFile("D:\\code\\c\\OpenSceneGraph-Data\\cessna.osg"), true );
+    root->addChild( osgDB::readNodeFile("D:\\code\\c\\OpenSceneGraph-Data\\cessnafire.osg"), false );
+    return root;
+}
+
 int main(int argc, char *argv[])
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -388,7 +397,8 @@ int main(int argc, char *argv[])
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer();
 
     osg::ref_ptr<osg::Node> root =
-            drawHouse();
+            demoKeyEvent();
+//            drawHouse();
 //            createWallPaperModel();
 //            demoTexture(); // drawBitmap(); //demoChangeGeometry(); //demoLOD(); // demoCallback(model); // demoTransform(model); // demoSwitch();
 
@@ -402,5 +412,6 @@ int main(int argc, char *argv[])
 
     viewer->setUpViewInWindow(100, 100, 800, 600);
     viewer->setSceneData(root.get());
+    viewer->addEventHandler( new KeyboardHandler );
     return viewer->run();
 }
