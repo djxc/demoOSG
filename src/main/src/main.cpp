@@ -4,25 +4,34 @@
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
 
-#include <osg/LineWidth>
-#include <osg/DrawPixels>
-#include <osg/AutoTransform>
-#include <osg/MatrixTransform>
-#include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
+#include <osg/Geode>
+#include <osg/TexGen>
+#include <osg/StateSet>
+#include <osg/LineWidth>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
-#include <osg/TextureCubeMap>
-#include <osg/TexGen>
-#include <osg/ShapeDrawable>
-#include <osg/Geode>
-#include <osg/PolygonOffset>
-#include <osgUtil/Optimizer>
-#include <osg/StateSet>
 #include <osg/DrawPixels>
+#include <osg/DrawPixels>
+#include <osg/ShapeDrawable>
+#include <osg/AutoTransform>
+#include <osg/PolygonOffset>
+#include <osg/TextureCubeMap>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
+
+#include <osgParticle/PrecipitationEffect>
 
 #include <osgViewer/ViewerEventHandlers> //事件监听
+
+#include <osgGA/DriveManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/TerrainManipulator>
 #include <osgGA/StateSetManipulator> //事件响应类，对渲染状态进行控制
+#include <osgGA/TrackballManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+
+#include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier> //简化几何体
 #include <osgUtil/DelaunayTriangulator>
 
@@ -36,6 +45,8 @@
 #include <userScene/wallpapermodel.h>
 
 #include <handlers/keyboardhandler.h>
+
+#include <precipitations/conduitprecipitation.h>
 
 
 osg::Transform* createAutoTransform(double posX, osg::Node* model) {
@@ -61,14 +72,6 @@ osg::Transform* createPositionAttitudeTransform(double posX, double rotateZ, osg
     return pat.release();
 }
 
-osg::ref_ptr<osg::Node> demoCallback(osg::Node* model) {
-    // 创建一个位置旋转节点，用osg中的智能指针存储；每一帧都会调用回调函数,回调函数是用户继承NodeCallback自己实现的类。这里仅用到更新回调，另外还存在事件回调
-    osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
-    pat->addChild(model);
-    pat->setUpdateCallback(new RotateCallback);
-    pat->addUpdateCallback(new InfoCallback);
-    return pat;
-}
 
 osg::ref_ptr<osg::Node> demoTransform(osg::Node* model) {
     // 创建一个组节点，添加3个子节点，每个子节点都是transform节点，相同的model都是transform的叶子节点，即一个model有三个示例。
@@ -77,6 +80,15 @@ osg::ref_ptr<osg::Node> demoTransform(osg::Node* model) {
     root->addChild(createAutoTransform(0.0, model));
     root->addChild(createPositionAttitudeTransform(5.0, -osg::PI/4, model));
     return root;
+}
+
+osg::ref_ptr<osg::Node> demoCallback(osg::Node* model) {
+    // 创建一个位置旋转节点，用osg中的智能指针存储；每一帧都会调用回调函数,回调函数是用户继承NodeCallback自己实现的类。这里仅用到更新回调，另外还存在事件回调
+    osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+    pat->addChild(model);
+    pat->setUpdateCallback(new RotateCallback);
+    pat->addUpdateCallback(new InfoCallback);
+    return pat;
 }
 
 osg::ref_ptr<osg::Node>  demoSwitch() {
@@ -389,15 +401,31 @@ osg::ref_ptr<osg::Node> demoKeyEvent() {
 int main(int argc, char *argv[])
 {
     osg::ArgumentParser arguments(&argc, argv);
-    osg::Node* model = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Group> root = new osg::Group();
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (!model) {
-        model = osgDB::readNodeFile("D:\\code\\c\\OpenSceneGraph-Data\\cow.osg");
+        model = osgDB::readNodeFile("D:\\code\\c\\OpenSceneGraph-Data\\glider.osg");
     }
+    root->addChild(model.get());
 
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer();
 
-    osg::ref_ptr<osg::Node> root =
-            demoKeyEvent();
+    // 雪花例子特效
+    osg::ref_ptr<osgParticle::PrecipitationEffect> precipitationEffect = new osgParticle::PrecipitationEffect;
+    precipitationEffect->snow(0.5);
+    precipitationEffect->setParticleColor(osg::Vec4(1, 1, 1, 1));
+    precipitationEffect->setWind(osg::Vec3(2, 0, 0));
+
+    root->addChild(precipitationEffect.get());
+
+    //申请喷泉对象
+    ConduitPrecipitation od;
+    //设置位置
+    od.m_vecPosition.set(0, 0, 0) ;
+    //加入到场景当中，就开始喷了
+    root ->addChild(od.CreateConduit(root)) ;
+//    root =
+//            demoKeyEvent();
 //            drawHouse();
 //            createWallPaperModel();
 //            demoTexture(); // drawBitmap(); //demoChangeGeometry(); //demoLOD(); // demoCallback(model); // demoTransform(model); // demoSwitch();
@@ -412,6 +440,20 @@ int main(int argc, char *argv[])
 
     viewer->setUpViewInWindow(100, 100, 800, 600);
     viewer->setSceneData(root.get());
+    // 添加常用状态事件回调，w会切换显示网格，再点击一下显示节点；s显示帧率，再点击会显示详情；l控制灯光；f会切换全屏
+    viewer->addEventHandler(new osgGA::StateSetManipulator(viewer->getCamera()->getOrCreateStateSet()));
+    viewer->addEventHandler(new osgViewer::WindowSizeHandler);
+    viewer->addEventHandler(new osgViewer::StatsHandler);
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keysSwitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+        keysSwitchManipulator->addMatrixManipulator('1', "Trackball", new osgGA::TrackballManipulator);
+        keysSwitchManipulator->addMatrixManipulator('2', "Flight", new osgGA::FlightManipulator);
+        keysSwitchManipulator->addMatrixManipulator('3', "Drive", new osgGA::DriveManipulator);
+        keysSwitchManipulator->addMatrixManipulator('4', "Terrain", new osgGA::TerrainManipulator);
+        viewer->setCameraManipulator(keysSwitchManipulator);
+    }
+    viewer->addEventHandler(new osgViewer::RecordCameraPathHandler);
+
     viewer->addEventHandler( new KeyboardHandler );
     return viewer->run();
 }

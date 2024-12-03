@@ -29,16 +29,16 @@ bool KeyboardHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAction
            osg::Switch* root = dynamic_cast<osg::Switch*>( viewer->getSceneData() );
            if ( !root ) return false;
 
-           if ( ea.getKey()=='1' )
-           {
-               root->setValue( 0, true );
-               root->setValue( 1, false );
-           }
-           else if ( ea.getKey()=='2' )
-           {
-               root->setValue( 0, false );
-               root->setValue( 1, true );
-           }
+//           if ( ea.getKey()=='1' )
+//           {
+//               root->setValue( 0, true );
+//               root->setValue( 1, false );
+//           }
+//           else if ( ea.getKey()=='2' )
+//           {
+//               root->setValue( 0, false );
+//               root->setValue( 1, true );
+//           }
            return true;
        }
        break;

@@ -24,6 +24,7 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 add_subdirectory(src/handlers)
 add_subdirectory(src/callback)
 add_subdirectory(src/userScene)
+add_subdirectory(src/precipitations)
 add_subdirectory(src/main)
 
 file(GLOB_RECURSE srcs CONFIGURE_DEPENDS src/*.cpp src/*.h)
@@ -46,4 +47,4 @@ target_link_libraries(demoOSG PRIVATE Qt5::Widgets
     ${LIB_OSG_PATH}\\osgPresentationd.lib
     ${LIB_OSG_PATH}\\osgParticled.lib
     ${LIB_OSG_PATH}\\osgFXd.lib
-    callback userScene handlers)
+    callback userScene handlers precipitations)

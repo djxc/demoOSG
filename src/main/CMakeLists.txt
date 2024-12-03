@@ -4,4 +4,5 @@ target_include_directories(main PUBLIC include)
 target_link_libraries(main PUBLIC callback)
 target_link_libraries(main PUBLIC userScene)
 target_link_libraries(main PUBLIC handlers)
+target_link_libraries(main PUBLIC precipitations)
 

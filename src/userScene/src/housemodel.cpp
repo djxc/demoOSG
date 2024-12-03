@@ -27,8 +27,11 @@ osg::Drawable* HouseModel::createHouseRoof() {
 
     osg::ref_ptr<osg::Geometry> houseRoof = new osg::Geometry;
     houseRoof->setVertexArray(vertices.get());
+
+    colors->setBinding(osg::Array::BIND_OVERALL);
     houseRoof->setColorArray(colors.get());
-    houseRoof->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+//    houseRoof->setColorBinding(osg::Geometry::BIND_OVERALL);
     houseRoof->addPrimitiveSet(roof.get());
     houseRoof->addPrimitiveSet(roofSide.get());
     osgUtil::SmoothingVisitor smv;
