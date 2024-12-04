@@ -16,6 +16,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/src)
 
 # 引入第三方头文件
 include_directories("D:\\code\\c\\osg-3.7.0\\include")
+include_directories("D:\\Qt\\Qt5.14.2\\5.14.2\\msvc2017_64\\include")
 
 set(LIB_OSG_PATH "D:\\code\\c\\osg-3.7.0\\lib")
 
@@ -47,4 +48,5 @@ target_link_libraries(demoOSG PRIVATE Qt5::Widgets
     ${LIB_OSG_PATH}\\osgPresentationd.lib
     ${LIB_OSG_PATH}\\osgParticled.lib
     ${LIB_OSG_PATH}\\osgFXd.lib
-    callback userScene handlers precipitations)
+    ${LIB_OSG_PATH}\\osgQOpenGLd.lib
+    main callback userScene handlers precipitations)
